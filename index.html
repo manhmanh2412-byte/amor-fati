@@ -3,156 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dear Someone - Panda Story</title>
+    <title>Panda Story - Full Screen</title>
     <style>
         :root {
-            --bg-color: #fdfdfd;
-            --text-main: #222222;
-            --text-sub: #777777;
+            --text-color: #333;
+            --bg-overlay: rgba(255, 255, 255, 0.4); /* Lớp phủ nhẹ để dễ đọc chữ */
             --font-main: 'Georgia', serif;
         }
 
         body, html {
             margin: 0; padding: 0;
             width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
-            background-color: var(--bg-color);
-            color: var(--text-main);
             font-family: var(--font-main);
             overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .container {
+        /* Ảnh nền full màn hình */
+        .full-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url('panda.jpg'); /* Đảm bảo file trên GitHub là panda.jpg */
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+        }
+
+        .main-container {
             text-align: center;
-            max-width: 600px;
-            padding: 20px;
-            position: relative;
+            background: var(--bg-overlay);
+            padding: 40px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px); /* Làm mờ nhẹ hậu cảnh cho sang */
+            max-width: 80%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        .image-wrapper {
-            position: relative;
-            display: inline-block;
-        }
-
-        .image-wrapper img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            display: block;
-        }
-
-        /* Chữ đè lên giữa bức ảnh */
-        .overlay-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%;
-            font-size: 1.4rem;
+        .question {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: var(--text-color);
             font-weight: bold;
-            color: #333; /* Bạn có thể đổi sang trắng #fff nếu ảnh gấu trúc tối màu */
-            text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
-            pointer-events: none; /* Để không cản trở việc click vào container nếu cần */
-        }
-
-        .content-box {
-            position: relative;
-            height: 60px;
-            margin-top: 25px;
-        }
-
-        .message {
-            position: absolute;
-            width: 100%;
-            left: 0; top: 0;
-            font-size: 1.2rem;
-            opacity: 0;
             transition: all 0.8s ease;
         }
 
-        .fade-in-view {
-            opacity: 1 !important;
-            transform: translateY(0) !important;
+        .response {
+            font-size: 1.5rem;
+            color: var(--text-color);
+            display: none; /* Ẩn lúc đầu */
+            animation: fadeInUp 1s forwards;
         }
 
-        /* Group nút bấm */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .btn-group {
-            margin-top: 30px;
             display: flex;
             justify-content: center;
-            gap: 20px;
-            position: relative;
+            gap: 30px;
+            margin-top: 20px;
             min-height: 50px;
         }
 
         .btn {
-            background: white;
-            border: 1px solid #ddd;
-            padding: 10px 25px;
-            cursor: pointer;
+            padding: 12px 30px;
+            font-size: 1rem;
             font-family: inherit;
-            border-radius: 20px;
+            border: 1px solid #333;
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
             transition: 0.3s;
         }
 
         .btn-yes:hover {
-            border-color: #333;
-            background-color: #f9f9f9;
+            background: #333;
+            color: white;
         }
 
-        /* Nút Không thích chạy trốn */
         #btn-no {
             position: absolute;
             transition: all 0.2s ease;
             white-space: nowrap;
+            z-index: 100;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="image-wrapper">
-            <img src="panda.jpg" alt="Panda">
-            <div class="overlay-text" id="main-question">
-                Hellu, b có thích gấu trúc hong?
-            </div>
+    <div class="full-bg"></div>
+
+    <div class="main-container" id="ui-box">
+        <div class="question" id="text-q">
+            Hellu, b có thích gấu trúc hong?
+        </div>
+        
+        <div class="response" id="text-r">
+            Tui cũng thích tụi ló, heh
         </div>
 
-        <div class="content-box">
-            <div class="message" id="response-msg">
-                Tui cũng thích tụi ló, heh
-            </div>
-        </div>
-
-        <div class="btn-group" id="actions">
-            <button class="btn btn-yes" onclick="sayYes()">Có có</button>
-            <button class="btn" id="btn-no" onmouseover="moveButton()">Không thích</button>
+        <div class="btn-group" id="btn-area">
+            <button class="btn btn-yes" onclick="showLove()">Có có</button>
+            <button class="btn" id="btn-no" onmouseover="runAway()">Không thích</button>
         </div>
     </div>
 
     <script>
-        function sayYes() {
-            // Hiện dòng chữ phản hồi
-            document.getElementById('response-msg').classList.add('fade-in-view');
+        function showLove() {
+            // Ẩn câu hỏi và nút
+            document.getElementById('text-q').style.display = 'none';
+            document.getElementById('btn-area').style.display = 'none';
             
-            // Ẩn câu hỏi cũ và nút bấm
-            document.getElementById('main-question').style.opacity = '0';
-            document.getElementById('actions').style.display = 'none';
+            // Hiện câu trả lời
+            document.getElementById('text-r').style.display = 'block';
+            
+            // Làm cho khung container mờ đi một chút cho lãng mạn
+            document.getElementById('ui-box').style.background = 'rgba(255, 255, 255, 0.2)';
         }
 
-        function moveButton() {
+        function runAway() {
             const btnNo = document.getElementById('btn-no');
             
-            // Tính toán vị trí ngẫu nhiên trong phạm vi màn hình
-            const x = Math.random() * (window.innerWidth - btnNo.offsetWidth - 50);
-            const y = Math.random() * (window.innerHeight - btnNo.offsetHeight - 50);
+            // Giới hạn để nút không chạy ra quá mép màn hình
+            const x = Math.random() * (window.innerWidth - btnNo.offsetWidth - 100);
+            const y = Math.random() * (window.innerHeight - btnNo.offsetHeight - 100);
             
-            // Đưa nút ra khỏi container để bay tự do trên màn hình
             btnNo.style.position = 'fixed';
             btnNo.style.left = x + 'px';
             btnNo.style.top = y + 'px';
         }
     </script>
-
 </body>
 </html>
