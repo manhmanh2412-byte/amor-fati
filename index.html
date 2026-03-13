@@ -1,51 +1,163 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <title>Hello pookie</title>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lời chào đầu tiên</title>
+    <style>
+        :root {
+            /* Tông màu tối giản: Trắng, Đen nhạt, Xám */
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --accent-color: #555555; /* Xám trung tính, không sến */
+            --font-family: 'Georgia', serif; /* Font chữ có chân, mang chất văn học */
+            --transition-speed: 1.5s;
+        }
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/spinload.css">
-    <link rel="stylesheet" type="text/css" href=" https://fonts.googleapis.com/css?family=Pacifico" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  </head>
-  <body>
-    <div class="wrapper">
-      <!-- Preloader -->
-    <div id="preloader">
-      <div class="spinner">
-        <div class="rect1"></div>
-        <div class="rect2"></div>
-        <div class="rect3"></div>
-        <div class="rect4"></div>
-        <div class="rect5"></div>
-      </div>
-  </div>
-      <div id="bg"></div>
-      <div class="content">
-        <header>
-          <h2 id="title"></h2>
-          <h4 id="desc"></h4>
-        </header>
-        <button id="yes" type="button" class="btn btn-danger btn-lg"> </button>
-        <button id="no" type="button" class="btn btn-info btn-lg"></button>
-      </div>
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-family);
+            overflow: hidden; /* Ngăn cuộn trang */
+            text-align: center;
+        }
+
+        /* Container chứa hình ảnh và văn bản */
+        .intro-container {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 30px;
+            max-width: 600px; padding: 20px;
+        }
+
+        /* Hình ảnh gấu trúc - Giữ nguyên */
+        .panda-image-container {
+            width: 100%;
+            display: flex; justify-content: center;
+        }
+        
+        .panda-image {
+            max-width: 80%; /* Giảm kích thước ảnh một chút để vừa khung hình */
+            height: auto;
+            transition: transform 0.3s;
+        }
+
+        /* Container chứa các dòng chữ để chuyển cảnh */
+        .text-container {
+            position: relative;
+            width: 100%; height: 60px; /* Độ cao cố định cho văn bản */
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        /* Phong cách chung cho các dòng chữ */
+        .typewriter {
+            position: absolute;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            letter-spacing: 1px;
+            font-weight: 300;
+            opacity: 0;
+            width: 100%;
+        }
+
+        /* Dòng chữ 1: "Hellu, b có thích gấu trúc hong?" */
+        #text1 {
+            opacity: 1; /* Hiển thị lúc đầu */
+        }
+
+        /* Nút chuyển cảnh tinh tế */
+        .btn-start {
+            margin-top: 40px;
+            background: none;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 10px 25px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+        }
+
+        .btn-start:hover {
+            border-color: #000;
+            color: #000;
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        /* --- Định nghĩa Animation --- */
+
+        /* Animation cho dòng chữ cũ: Lướt lên và mờ đi */
+        @keyframes slideOutFadeOut {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-30px); }
+        }
+
+        /* Animation cho dòng chữ mới: Hiện lên */
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* Lớp CSS để kích hoạt animation cho dòng chữ cũ */
+        .animate-out {
+            animation: slideOutFadeOut var(--transition-speed) ease-out forwards;
+        }
+
+        /* Lớp CSS để kích hoạt animation cho dòng chữ mới */
+        .animate-in {
+            animation: fadeIn var(--transition-speed) ease-in forwards;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="intro-container">
+        <div class="panda-image-container">
+            <img src="panda_intro.png" class="panda-image" alt="Gấu trúc">
+        </div>
+
+        <div class="text-container">
+            <div class="typewriter" id="text1">
+                Hellu, b có thích gấu trúc hong?
+            </div>
+            <div class="typewriter" id="text2">
+                Tui thì thích lắm á.<br>
+                <span style="font-style: italic; font-size: 0.9rem; color: #777;">(Bạn hãy sửa lại câu văn này cho đúng ý đồ của mình nhé)</span>
+            </div>
+        </div>
+
+        <button class="btn-start" id="btnNext" onclick="changePandaMessage()">Tiếp tục</button>
     </div>
-    <audio src="./sound/sound.mp3" autoplay></audio>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script
-  src="https://code.jquery.com/jquery-3.4.1.js"
-  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-  crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-    <script src="./config.js"></script>
-    <script src="./js/main.js"></script>
 
-  </body>
+    <script>
+        function changePandaMessage() {
+            const text1 = document.getElementById('text1');
+            const text2 = document.getElementById('text2');
+            const btn = document.getElementById('btnNext');
+
+            // 1. Kích hoạt animation cho dòng chữ cũ
+            text1.classList.add('animate-out');
+
+            // 2. Sau một khoảng thời gian ngắn, hiện dòng chữ mới
+            // (Nên hiện trước khi dòng cũ mờ hẳn để tạo cảm giác chuyển tiếp mượt mà)
+            setTimeout(() => {
+                // Kích hoạt animation cho dòng chữ mới
+                text2.classList.add('animate-in');
+            }, 500); // Đợi 0.5s để dòng chữ cũ bắt đầu lướt lên
+
+            // 3. Ẩn nút "Tiếp tục" sau khi chuyển xong
+            setTimeout(() => {
+                btn.style.display = 'none';
+                // (Sau dòng này, bạn có thể thêm code để dẫn vào phần storytelling tiếp theo)
+            }, 2000); // Đợi 2s để animation hoàn tất
+        }
+    </script>
+
+</body>
 </html>
