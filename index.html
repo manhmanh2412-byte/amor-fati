@@ -3,107 +3,321 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gửi người đặc biệt</title>
+    <title>Dear Someone - A Panda Story</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #ffeef2;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
+        :root {
+            /* Tông màu Gấu trúc: Tối giản, Lạnh lùng */
+            --bg-color-1: #ffffff; /* Trắng sạch */
+            --bg-color-2: #f0f0f0; /* Xám cực nhạt */
+            --bg-color-3: #1a1a1a; /* Đen nhạt (lạnh lùng hơn đen tuyền) */
+            --text-color-dark: #333333;
+            --text-color-light: #e0e0e0;
+            --accent-color: #555555; /* Xám trung tính */
+            
+            --font-family: 'Georgia', serif; /* Font chữ có chân, mang chất văn học */
+            --transition-speed: 1s;
         }
 
-        .container {
-            text-align: center;
-            cursor: pointer;
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            overflow: hidden; /* Ép buộc cuộn bằng JS */
+            font-family: var(--font-family);
+            scroll-behavior: smooth;
         }
 
-        /* Hiệu ứng trái tim đập */
-        .heart {
+        /* Container chứa tất cả các slide */
+        .main-container {
+            width: 100%; height: 600%; /* 6 slides * 100vh */
             position: relative;
-            width: 100px;
-            height: 90px;
-            background-color: #ff5e78;
-            margin: 0 auto;
-            transform: rotate(-45deg);
-            animation: beat 0.8s infinite alternate;
-            box-shadow: 0 0 40px #ffb3c1;
+            transition: transform var(--transition-speed) ease-in-out;
         }
 
-        .heart::before, .heart::after {
+        /* Phong cách chung cho mỗi slide */
+        .slide {
+            width: 100%; height: 100vh;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            text-align: center;
+            padding: 40px;
+            box-sizing: border-box;
+            opacity: 0; /* Ẩn lúc đầu */
+            transition: opacity 1.5s ease-in-out 0.5s; /* Hiện chậm sau khi cuộn xong */
+        }
+
+        /* Slide đang hoạt động */
+        .slide.active {
+            opacity: 1;
+        }
+
+        /* Màu nền cho các slide lẻ */
+        .slide:nth-child(odd) {
+            background-color: var(--bg-color-1);
+            color: var(--text-color-dark);
+        }
+
+        /* Màu nền cho các slide chẵn */
+        .slide:nth-child(even) {
+            background-color: var(--bg-color-2);
+            color: var(--text-color-dark);
+        }
+        
+        /* Slide cuối cùng tông màu tối */
+        .slide:last-child {
+            background-color: var(--bg-color-3);
+            color: var(--text-color-light);
+        }
+
+        /* Phong cách cho văn bản */
+        .typewriter {
+            font-size: 1.3rem;
+            line-height: 2;
+            letter-spacing: 1px;
+            max-width: 700px;
+            font-weight: 300;
+        }
+
+        .highlight {
+            font-weight: 700;
+            color: #000;
+        }
+
+        /* Ký hiệu Gấu trúc tối giản */
+        .panda-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #000;
+        }
+        
+        /* Hiệu ứng nhịp đập tối giản */
+        .minimal-heart {
+            width: 40px; height: 40px;
+            border: 1px solid #444;
+            transform: rotate(-45deg);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .minimal-heart::before, .minimal-heart::after {
             content: "";
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            background-color: #ff5e78;
+            position: absolute; width: 40px; height: 40px;
+            border: 1px solid #444;
             border-radius: 50%;
         }
+        .minimal-heart::before { top: -21px; left: -1px; border-bottom: none; border-right: none; }
+        .minimal-heart::after { left: 20px; top: -1px; border-bottom: none; border-left: none; }
 
-        .heart::before { top: -50px; left: 0; }
-        .heart::after { left: 50px; top: 0; }
-
-        @keyframes beat {
-            to { transform: scale(1.1) rotate(-45deg); }
-        }
-
-        .message {
-            margin-top: 80px;
-            color: #d63384;
-            font-size: 1.5rem;
-            font-weight: bold;
-            opacity: 0;
-            transition: opacity 1s ease-in;
-        }
-
-        .sub-message {
-            color: #888;
+        /* Nút chuyển cảnh tinh tế cho slide đầu */
+        .btn-start {
+            margin-top: 40px;
+            background: none;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 12px 30px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             font-size: 0.9rem;
-            margin-top: 10px;
         }
+
+        .btn-start:hover {
+            border-color: #000;
+            color: #000;
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        /* Thanh điều hướng slide (Optional) */
+        .nav-dots {
+            position: fixed;
+            right: 20px; top: 50%;
+            transform: translateY(-50%);
+            display: flex; flex-direction: column;
+            gap: 15px;
+            z-index: 100;
+        }
+        
+        .dot {
+            width: 10px; height: 10px;
+            background-color: #bbb;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .dot.active {
+            background-color: #333;
+            transform: scale(1.3);
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="container" onclick="revealMessage()">
-        <div class="heart"></div>
-        <div class="message" id="mainMessage">
-            Bạn là điều tuyệt vời nhất mình tìm thấy ✨
+    <div class="nav-dots">
+        <div class="dot active" onclick="scrollToSlide(0)"></div>
+        <div class="dot" onclick="scrollToSlide(1)"></div>
+        <div class="dot" onclick="scrollToSlide(2)"></div>
+        <div class="dot" onclick="scrollToSlide(3)"></div>
+        <div class="dot" onclick="scrollToSlide(4)"></div>
+        <div class="dot" onclick="scrollToSlide(5)"></div>
+    </div>
+
+    <div class="main-container" id="mainContainer">
+        
+        <div class="slide active" id="slide0">
+            <div class="typewriter">
+                Thế giới này vốn dĩ là những mảnh ghép rời rạc.<br>
+                Đôi khi, ta vô tình tìm thấy một tần số trùng khớp.<br>
+                Một sự hiện diện,<br>
+                <span class="highlight">Dành riêng cho bạn.</span>
+            </div>
+            <button class="btn-start" onclick="scrollToSlide(1)">Bắt đầu hành trình</button>
         </div>
-        <div class="sub-message" id="instruction">Nhấn vào trái tim đi...</div>
+
+        <div class="slide" id="slide1">
+            <div class="panda-icon">🐼</div>
+            <div class="typewriter">
+                Giữa khu rừng rộng lớn đầy ồn ào,<br>
+                Có một loài sinh vật chọn cách sống tĩnh lặng.<br>
+                Chúng không phô trương, chỉ âm thầm tồn tại,<br>
+                Và tận hưởng những điều đơn giản nhất.<br>
+                <span style="font-style: italic; font-size: 0.9rem; color: #777;">(Giống như cách mình quan sát bạn vậy.)</span>
+            </div>
+        </div>
+
+        <div class="slide" id="slide2">
+            <div class="typewriter">
+                Không cần quá nhiều lời lẽ hoa mỹ.<br>
+                Sự chân thành thường nằm ở những điều không nói.<br>
+                Một cái nhìn, một nụ cười, hay chỉ là...<br>
+                Sự hiện diện của bạn ở đây.
+            </div>
+        </div>
+
+        <div class="slide" id="slide3">
+            <div class="typewriter">
+                Mình không thích những điều sến súa.<br>
+                Nhưng mình biết trân trọng những gì thực sự quý giá.<br>
+                Bạn,<br>
+                Là một trong những điều đó.<br>
+                <span style="font-weight: 700;">Hết rồi. Chỉ vậy thôi.</span>
+            </div>
+        </div>
+
+        <div class="slide" id="slide4">
+            <div class="typewriter" style="color: #444;">
+                <span style="color: #000;">1010101...</span><br>
+                Trong thế giới của những dòng mã khô khan,<br>
+                Cảm xúc là một lỗi logic tuyệt vời.<br>
+                Và bạn là một lỗi logic tuyệt vời nhất mà mình gặp được.
+            </div>
+        </div>
+
+        <div class="slide" id="slide5">
+            <div class="minimal-heart"></div>
+            <div class="typewriter">
+                Chỉ đơn giản là vậy.<br>
+                Cảm ơn vì đã ở đây.<br>
+                <span class="highlight" style="color: #fff;">Gửi người đặc biệt.</span>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        function revealMessage() {
-            document.getElementById('mainMessage').style.opacity = '1';
-            document.getElementById('instruction').style.display = 'none';
+        const container = document.getElementById('mainContainer');
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+        let currentSlide = 0;
+        let isScrolling = false;
+
+        // Hàm cuộn đến slide cụ thể
+        function scrollToSlide(slideIndex) {
+            if (isScrolling) return; // Ngăn cuộn liên tục
+            isScrolling = true;
+            currentSlide = slideIndex;
             
-            // Tạo hiệu ứng bóng bóng trái tim khi click
-            for (let i = 0; i < 10; i++) {
-                createMiniHeart();
-            }
-        }
-
-        function createMiniHeart() {
-            const mini = document.createElement('div');
-            mini.innerHTML = '❤️';
-            mini.style.position = 'absolute';
-            mini.style.left = Math.random() * 100 + 'vw';
-            mini.style.bottom = '0';
-            mini.style.fontSize = Math.random() * 20 + 10 + 'px';
-            mini.style.transition = 'transform 3s linear, opacity 3s';
-            document.body.appendChild(mini);
-
+            // Di chuyển container
+            container.style.transform = `translateY(-${currentSlide * 100}vh)`;
+            
+            // Cập nhật trạng thái Active cho slide và dot
+            slides.forEach((slide, index) => {
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+            
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+            
+            // Đợi hiệu ứng cuộn xong
             setTimeout(() => {
-                mini.style.transform = `translateY(-100vh) translateX(${Math.random() * 100 - 50}px)`;
-                mini.style.opacity = '0';
-            }, 100);
-
-            setTimeout(() => mini.remove(), 3000);
+                isScrolling = false;
+            }, 1000); // Khớp với transition speed
         }
+
+        // Xử lý sự kiện cuộn chuột
+        window.addEventListener('wheel', (e) => {
+            if (isScrolling) return;
+            if (e.deltaY > 0) {
+                // Cuộn xuống
+                if (currentSlide < slides.length - 1) {
+                    scrollToSlide(currentSlide + 1);
+                }
+            } else {
+                // Cuộn lên
+                if (currentSlide > 0) {
+                    scrollToSlide(currentSlide - 1);
+                }
+            }
+        });
+
+        // Xử lý sự kiện vuốt trên điện thoại
+        let touchStartY = 0;
+        window.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (isScrolling) return;
+            const touchEndY = e.touches[0].clientY;
+            const deltaY = touchEndY - touchStartY;
+            
+            if (Math.abs(deltaY) > 50) { // Đủ dài để tính là vuốt
+                if (deltaY < 0) {
+                    // Vuốt lên (cuộn xuống)
+                    if (currentSlide < slides.length - 1) {
+                        scrollToSlide(currentSlide + 1);
+                    }
+                } else {
+                    // Vuốt xuống (cuộn lên)
+                    if (currentSlide > 0) {
+                        scrollToSlide(currentSlide - 1);
+                    }
+                }
+            }
+        });
+
+        // Hỗ trợ phím mũi tên
+        window.addEventListener('keydown', (e) => {
+            if (isScrolling) return;
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                if (currentSlide < slides.length - 1) scrollToSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                if (currentSlide > 0) scrollToSlide(currentSlide - 1);
+            }
+        });
+
     </script>
+
 </body>
 </html>
