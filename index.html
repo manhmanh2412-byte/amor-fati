@@ -149,7 +149,7 @@
         </div>
     </div>
 
-    <script>
+  <script>
         function handleYes() {
             document.getElementById('text-q').style.display = 'none';
             document.getElementById('btn-area').style.display = 'none';
@@ -166,11 +166,17 @@
 
         function runAway() {
             const btnNo = document.getElementById('btn-no');
-            const x = Math.random() * (window.innerWidth - btnNo.offsetWidth - 100);
-            const y = Math.random() * (window.innerHeight - btnNo.offsetHeight - 100);
-            btnNo.style.position = 'fixed';
-            btnNo.style.left = x + 'px';
-            btnNo.style.top = y + 'px';
+            
+            // Giới hạn vùng chạy trong bán kính 150px
+            const limit = 150; 
+            
+            // Tạo tọa độ nhảy ngẫu nhiên trong phạm vi giới hạn
+            const randomX = (Math.random() - 0.5) * limit * 2;
+            const randomY = (Math.random() - 0.5) * limit * 2;
+            
+            // Dùng transform để nút nhảy quanh vị trí gốc của nó
+            btnNo.style.transform = `translate(${randomX}px, ${randomY}px)`;
+            btnNo.style.transition = "all 0.2s ease"; // Cho nó lướt đi mượt mà
         }
     </script>
 </body>
