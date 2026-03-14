@@ -1,2 +1,2 @@
-# dear-someone
+# amor-fati
 Tùy tiện code bừa, hoặc không ...
