@@ -3,22 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panda Story - Magic Letter</title>
+    <title>Panda Story</title>
     <style>
         :root {
-            --text-color: #333;
-            --bg-overlay: rgba(255, 255, 255, 0.6); 
-            --font-main: 'Georgia', serif;
+            --bg-overlay: rgba(255, 255, 255, 0.7);
         }
 
         body, html {
             margin: 0; padding: 0;
             width: 100%; height: 100%;
-            font-family: var(--font-main);
+            font-family: 'Georgia', serif;
             overflow: hidden;
-            background-color: #000;
         }
 
+        /* FIX HÌNH NỀN: Đảm bảo luôn hiện gấu trúc */
         .full-bg {
             position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
@@ -27,95 +25,72 @@
             z-index: -1;
         }
 
-        /* KHUNG CHỮ - Nhích lên cao */
+        /* KHUNG CHỮ: Đẩy lên cao 10% so với tâm */
         .main-container {
             position: absolute;
-            top: 45%; left: 50%;
+            top: 40%; left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
             background: var(--bg-overlay);
-            padding: 35px 50px;
+            padding: 30px 40px;
             border-radius: 20px;
             backdrop-filter: blur(8px);
-            width: 300px;
+            width: 320px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             z-index: 10;
+            transition: opacity 0.8s ease;
         }
 
-        .question, .response {
-            font-size: 1.5rem; color: var(--text-color);
-            font-weight: bold; margin: 0;
-        }
+        .question, .response { font-size: 1.5rem; font-weight: bold; color: #333; }
+        .response { display: none; }
 
-        .response { 
-            display: none; 
-            transition: opacity 1s ease;
-        }
+        .btn-group { display: flex; justify-content: center; margin-top: 25px; gap: 30px; }
+        .btn { padding: 10px 25px; border-radius: 20px; border: 1px solid #333; background: white; cursor: pointer; }
 
-        .btn-group {
-            display: flex; justify-content: center;
-            margin-top: 30px; gap: 30px;
-        }
-
-        .btn {
-            padding: 10px 25px; border-radius: 20px;
-            border: 1px solid #333; background: white;
-            cursor: pointer; transition: 0.3s;
-        }
-
-        /* XẤP THƯ - Đặt độc lập để không bị lỗi kéo */
+        /* XẤP THƯ: Đặt cùng vị trí với khung chữ */
         .letter-stack {
             display: none;
             position: absolute;
-            top: 45%; left: 50%;
+            top: 40%; left: 50%;
             width: 320px; height: 260px;
             transform: translate(-50%, -50%);
             z-index: 100;
         }
 
         .sheet {
-            position: absolute;
-            width: 100%; height: 100%;
-            background: white;
-            border: 1px solid #ddd;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: absolute; width: 100%; height: 100%;
+            background: white; border: 1px solid #ddd;
             padding: 25px; box-sizing: border-box;
-            cursor: grab; border-radius: 12px;
+            border-radius: 15px; cursor: grab;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             display: flex; flex-direction: column; justify-content: center;
-            text-align: left; line-height: 1.6;
-            font-size: 0.95rem; color: #444;
+            font-size: 0.95rem; line-height: 1.6; color: #444;
             user-select: none;
-            touch-action: none; /* Quan trọng để kéo trên điện thoại nếu cần */
         }
 
         .sheet:active { cursor: grabbing; }
 
         .sticker {
             position: absolute; width: 45px; height: 45px;
-            bottom: 10px; right: 10px; border-radius: 50%; pointer-events: none;
+            bottom: 10px; right: 10px; border-radius: 50%;
         }
 
         #ins {
             display: none; position: absolute;
-            top: 65%; left: 50%; transform: translateX(-50%);
-            color: white; text-shadow: 1px 1px 3px #000;
-            font-size: 0.85rem; z-index: 101;
+            top: 62%; left: 50%; transform: translateX(-50%);
+            color: white; text-shadow: 1px 1px 4px #000;
+            z-index: 101; font-size: 0.85rem;
         }
 
-        /* Z-index và độ nghiêng ban đầu */
-        .sheet:nth-child(1) { z-index: 10; transform: rotate(-2deg); }
-        .sheet:nth-child(2) { z-index: 9; transform: rotate(3deg); }
-        .sheet:nth-child(3) { z-index: 8; transform: rotate(-4deg); }
-        .sheet:nth-child(4) { z-index: 7; transform: rotate(2deg); }
-        .sheet:nth-child(5) { z-index: 6; transform: rotate(-1deg); }
-        .sheet:nth-child(6) { z-index: 5; transform: rotate(4deg); }
-        .sheet:nth-child(7) { z-index: 4; transform: rotate(-2deg); }
-        .sheet:nth-child(8) { z-index: 3; transform: rotate(1deg); }
-
-        @keyframes stackFadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        /* Thứ tự hiển thị */
+        .sheet:nth-child(1) { z-index: 8; transform: rotate(-2deg); }
+        .sheet:nth-child(2) { z-index: 7; transform: rotate(3deg); }
+        .sheet:nth-child(3) { z-index: 6; transform: rotate(-4deg); }
+        .sheet:nth-child(4) { z-index: 5; transform: rotate(2deg); }
+        .sheet:nth-child(5) { z-index: 4; transform: rotate(-1deg); }
+        .sheet:nth-child(6) { z-index: 3; transform: rotate(4deg); }
+        .sheet:nth-child(7) { z-index: 2; transform: rotate(-3deg); }
+        .sheet:nth-child(8) { z-index: 1; transform: rotate(1deg); }
     </style>
 </head>
 <body>
@@ -131,7 +106,7 @@
         </div>
     </div>
 
-    <div class="letter-stack" id="stack"> 
+     <div class="letter-stack" id="stack"> 
                 <div class="sheet">Những con gió đã thổi qua đều để lại dấu ấn, những khổ cực bạn đã nếm trải nhất định sẽ có ngày được đền đáp.<img src="panda.jpg" class="sticker"></div>
                 <div class="sheet">Mong con đường sắp tới bạn đi sẽ bằng phẳng hơn, nếu có gồ ghề vẫn mong bạn đủ sức vượt qua.<img src="panda.jpg" class="sticker"></div>
                 <div class="sheet">Hãy ưu tiên cảm xúc của bản thân nhiều hơn.<img src="panda.jpg" class="sticker"></div>
@@ -139,17 +114,12 @@
                 <div class="sheet">Từng chút từng chút một, hãy làm cho bản thân hạnh phúc hơn.<img src="panda.jpg" class="sticker"></div>
                 <div class="sheet">Cuối cùng, tui ước rằng cuộc sống sẽ luôn ưu ái bạn.<img src="panda.jpg" class="sticker"></div>
 
-        
                 <p id="ins">Kéo tờ giấy sang một bên để đọc tiếp...</p>
-
-            </div>
-        </div>
     <script>
         function handleYes() {
             document.getElementById('text-q').style.display = 'none';
             document.getElementById('btn-area').style.display = 'none';
-            const res = document.getElementById('text-r');
-            res.style.display = 'block';
+            document.getElementById('text-r').style.display = 'block';
 
             setTimeout(() => {
                 document.getElementById('ui-box').style.opacity = '0';
@@ -157,9 +127,8 @@
                     document.getElementById('ui-box').style.display = 'none';
                     const stack = document.getElementById('stack');
                     stack.style.display = 'block';
-                    stack.style.animation = "stackFadeIn 0.8s forwards";
                     document.getElementById('ins').style.display = 'block';
-                    initDrag();
+                    initDrag(); // Chỉ kích hoạt kéo sau khi thư hiện ra
                 }, 1000);
             }, 1500);
         }
@@ -177,18 +146,19 @@
                     sheet.style.transition = 'none';
                 };
 
-                document.onmousemove = (e) => {
+                // Lắng nghe di chuyển trên toàn cửa sổ để không bị tuột
+                window.onmousemove = (e) => {
                     if (!isDragging) return;
                     let dx = e.clientX - startX;
                     let dy = e.clientY - startY;
-                    sheet.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx / 15}deg)`;
+                    sheet.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx / 12}deg)`;
                 };
 
-                document.onmouseup = (e) => {
+                window.onmouseup = (e) => {
                     if (!isDragging) return;
                     isDragging = false;
                     let dx = e.clientX - startX;
-                    if (Math.abs(dx) > 120) {
+                    if (Math.abs(dx) > 130) {
                         sheet.style.transition = '0.5s ease-out';
                         sheet.style.transform = `translate(${dx * 5}px, ${e.clientY - startY}px) rotate(${dx / 2}deg)`;
                         sheet.style.opacity = '0';
@@ -204,9 +174,22 @@
         function runAway() {
             const btn = document.getElementById('btn-no');
             btn.style.position = 'absolute';
-            btn.style.left = (Math.random() * 80) + '%';
-            btn.style.top = (Math.random() * 80) + '%';
+            btn.style.left = Math.random() * 80 + '%';
+            btn.style.top = Math.random() * 80 + '%';
         }
     </script>
 </body>
 </html>
+    <div class="letter-stack" id="stack"> 
+                <div class="sheet">Những con gió đã thổi qua đều để lại dấu ấn, những khổ cực bạn đã nếm trải nhất định sẽ có ngày được đền đáp.<img src="panda.jpg" class="sticker"></div>
+                <div class="sheet">Mong con đường sắp tới bạn đi sẽ bằng phẳng hơn, nếu có gồ ghề vẫn mong bạn đủ sức vượt qua.<img src="panda.jpg" class="sticker"></div>
+                <div class="sheet">Hãy ưu tiên cảm xúc của bản thân nhiều hơn.<img src="panda.jpg" class="sticker"></div>
+                <div class="sheet">Ai cũng có những ngày không ổn, và điều đó chẳng sao cả.<img src="panda.jpg" class="sticker"></div>
+                <div class="sheet">Từng chút từng chút một, hãy làm cho bản thân hạnh phúc hơn.<img src="panda.jpg" class="sticker"></div>
+                <div class="sheet">Cuối cùng, tui ước rằng cuộc sống sẽ luôn ưu ái bạn.<img src="panda.jpg" class="sticker"></div>
+
+        
+                <p id="ins">Kéo tờ giấy sang một bên để đọc tiếp...</p>
+
+            </div>
+        </div>
