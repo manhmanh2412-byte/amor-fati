@@ -16,75 +16,61 @@
             width: 100%; height: 100%;
             font-family: var(--font-main);
             overflow: hidden;
-            display: flex; justify-content: center; align-items: center;
+            background-color: #000;
         }
 
         .full-bg {
             position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
-            background-image: url('panda.jpg');
-            background-size: cover; background-position: center;
+            background: url('panda.jpg') no-repeat center center;
+            background-size: cover;
             z-index: -1;
         }
 
-        /* KHUNG CHÍNH - Đẩy lên cao */
+        /* KHUNG CHỮ - Nhích lên cao */
         .main-container {
+            position: absolute;
+            top: 45%; left: 50%;
+            transform: translate(-50%, -50%);
             text-align: center;
             background: var(--bg-overlay);
-            padding: 40px 50px;
+            padding: 35px 50px;
             border-radius: 20px;
             backdrop-filter: blur(8px);
-            max-width: 85%;
+            width: 300px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            transform: translateY(-80px); /* Nhích lên cao hẳn để thấy gấu trúc */
-            transition: all 0.5s ease;
-            position: relative;
-        }
-
-        .content-area {
-            min-height: 100px;
-            display: flex; align-items: center; justify-content: center;
-            position: relative;
+            z-index: 10;
         }
 
         .question, .response {
-            font-size: 1.6rem;
-            color: var(--text-color);
-            font-weight: bold;
-            margin: 0;
+            font-size: 1.5rem; color: var(--text-color);
+            font-weight: bold; margin: 0;
         }
 
         .response { 
             display: none; 
-            animation: fadeOut 1s forwards 1.5s; /* Tự mờ sau 1.5s */
-        }
-
-        @keyframes fadeOut {
-            to { opacity: 0; visibility: hidden; }
+            transition: opacity 1s ease;
         }
 
         .btn-group {
             display: flex; justify-content: center;
-            margin-top: 30px; gap: 40px;
+            margin-top: 30px; gap: 30px;
         }
 
         .btn {
-            padding: 10px 35px; border-radius: 25px;
+            padding: 10px 25px; border-radius: 20px;
             border: 1px solid #333; background: white;
-            cursor: pointer; font-family: inherit; transition: 0.3s;
+            cursor: pointer; transition: 0.3s;
         }
 
-        .btn-yes:hover { background: #333; color: white; }
-        #btn-no { position: relative; transition: 0.2s ease; }
-
-        /* --- XẤP THƯ NẰM NGAY TRONG KHUNG --- */
+        /* XẤP THƯ - Đặt độc lập để không bị lỗi kéo */
         .letter-stack {
             display: none;
             position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
+            top: 45%; left: 50%;
             width: 320px; height: 260px;
-            z-index: 2000;
+            transform: translate(-50%, -50%);
+            z-index: 100;
         }
 
         .sheet {
@@ -93,48 +79,42 @@
             background: white;
             border: 1px solid #ddd;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            padding: 25px;
-            box-sizing: border-box;
-            cursor: grab;
-            user-select: none;
+            padding: 25px; box-sizing: border-box;
+            cursor: grab; border-radius: 12px;
             display: flex; flex-direction: column; justify-content: center;
             text-align: left; line-height: 1.6;
             font-size: 0.95rem; color: #444;
-            border-radius: 12px;
-            transition: transform 0.1s ease;
-            -webkit-user-drag: none;
+            user-select: none;
+            touch-action: none; /* Quan trọng để kéo trên điện thoại nếu cần */
         }
 
         .sheet:active { cursor: grabbing; }
 
         .sticker {
             position: absolute; width: 45px; height: 45px;
-            bottom: 8px; right: 8px; border-radius: 50%;
-            pointer-events: none;
+            bottom: 10px; right: 10px; border-radius: 50%; pointer-events: none;
         }
 
-        /* Hướng dẫn */
         #ins {
-            display: none;
-            position: absolute; bottom: -60px; left: 50%;
-            transform: translateX(-50%);
-            width: 100%; font-size: 0.8rem; color: #555;
-            text-align: center;
+            display: none; position: absolute;
+            top: 65%; left: 50%; transform: translateX(-50%);
+            color: white; text-shadow: 1px 1px 3px #000;
+            font-size: 0.85rem; z-index: 101;
         }
 
-        /* Thứ tự và độ nghiêng (Tờ 1 trên cùng) */
-        .sheet:nth-child(1) { z-index: 10; transform: rotate(-1deg); }
-        .sheet:nth-child(2) { z-index: 9; transform: rotate(2deg); }
-        .sheet:nth-child(3) { z-index: 8; transform: rotate(-3deg); }
-        .sheet:nth-child(4) { z-index: 7; transform: rotate(1.5deg); }
+        /* Z-index và độ nghiêng ban đầu */
+        .sheet:nth-child(1) { z-index: 10; transform: rotate(-2deg); }
+        .sheet:nth-child(2) { z-index: 9; transform: rotate(3deg); }
+        .sheet:nth-child(3) { z-index: 8; transform: rotate(-4deg); }
+        .sheet:nth-child(4) { z-index: 7; transform: rotate(2deg); }
         .sheet:nth-child(5) { z-index: 6; transform: rotate(-1deg); }
-        .sheet:nth-child(6) { z-index: 5; transform: rotate(2.5deg); }
+        .sheet:nth-child(6) { z-index: 5; transform: rotate(4deg); }
         .sheet:nth-child(7) { z-index: 4; transform: rotate(-2deg); }
         .sheet:nth-child(8) { z-index: 3; transform: rotate(1deg); }
 
-        @keyframes stackIn {
-            from { opacity: 0; transform: translate(-50%, -40%); }
-            to { opacity: 1; transform: translate(-50%, -50%); }
+        @keyframes stackFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
@@ -143,44 +123,45 @@
     <div class="full-bg"></div>
 
     <div class="main-container" id="ui-box">
-        <div class="content-area" id="content-main">
-            <div class="question" id="text-q">Xin chào, bạn có thích gấu trúc hong?</div>
-            <div class="response" id="text-r">Tui cũng thích tụi ló.</div>
+        <div class="question" id="text-q">Xin chào, bạn có thích gấu trúc hong?</div>
+        <div class="response" id="text-r">Tui cũng thích tụi ló.</div>
+        <div class="btn-group" id="btn-area">
+            <button class="btn" onclick="handleYes()">Có có</button>
+            <button class="btn" id="btn-no" onmouseover="runAway()">Không thích</button>
+        </div>
+    </div>
 
-            <div class="letter-stack" id="stack">
-                <div class="sheet"><b>Phòng trường hợp bạn có một ngày tồi tệ.</b><br>Gửi bạn.<img src="panda.jpg" class="sticker"></div>
-                <div class="sheet">Chúc bạn tương lai xán lạn, tiền đồ tựa gấm.<img src="panda.jpg" class="sticker"></div>
+    <div class="letter-stack" id="stack"> 
                 <div class="sheet">Những con gió đã thổi qua đều để lại dấu ấn, những khổ cực bạn đã nếm trải nhất định sẽ có ngày được đền đáp.<img src="panda.jpg" class="sticker"></div>
                 <div class="sheet">Mong con đường sắp tới bạn đi sẽ bằng phẳng hơn, nếu có gồ ghề vẫn mong bạn đủ sức vượt qua.<img src="panda.jpg" class="sticker"></div>
                 <div class="sheet">Hãy ưu tiên cảm xúc của bản thân nhiều hơn.<img src="panda.jpg" class="sticker"></div>
                 <div class="sheet">Ai cũng có những ngày không ổn, và điều đó chẳng sao cả.<img src="panda.jpg" class="sticker"></div>
                 <div class="sheet">Từng chút từng chút một, hãy làm cho bản thân hạnh phúc hơn.<img src="panda.jpg" class="sticker"></div>
-                <div class="sheet">Cuối cùng, tui ước rằng cuộc sống sẽ luôn ưu ái bạn<img src="panda.jpg" class="sticker"></div>
+                <div class="sheet">Cuối cùng, tui ước rằng cuộc sống sẽ luôn ưu ái bạn.<img src="panda.jpg" class="sticker"></div>
+
+        
                 <p id="ins">Kéo tờ giấy sang một bên để đọc tiếp...</p>
+
             </div>
         </div>
-
-        <div class="btn-group" id="btn-area">
-            <button class="btn btn-yes" onclick="handleYes()">Có có</button>
-            <button class="btn" id="btn-no" onmouseover="runAway()">Không thích</button>
-        </div>
-    </div>
-
     <script>
         function handleYes() {
             document.getElementById('text-q').style.display = 'none';
             document.getElementById('btn-area').style.display = 'none';
-            document.getElementById('text-r').style.display = 'block';
+            const res = document.getElementById('text-r');
+            res.style.display = 'block';
 
-            // Sau 2.5 giây (để kịp đọc dòng phản hồi và chờ nó mờ đi)
             setTimeout(() => {
-                const stack = document.getElementById('stack');
-                const ins = document.getElementById('ins');
-                stack.style.display = 'block';
-                ins.style.display = 'block';
-                stack.style.animation = "stackIn 0.8s forwards";
-                initDrag();
-            }, 2500);
+                document.getElementById('ui-box').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('ui-box').style.display = 'none';
+                    const stack = document.getElementById('stack');
+                    stack.style.display = 'block';
+                    stack.style.animation = "stackFadeIn 0.8s forwards";
+                    document.getElementById('ins').style.display = 'block';
+                    initDrag();
+                }, 1000);
+            }, 1500);
         }
 
         function initDrag() {
@@ -188,7 +169,7 @@
             sheets.forEach((sheet) => {
                 let isDragging = false;
                 let startX, startY;
-                
+
                 sheet.onmousedown = (e) => {
                     isDragging = true;
                     startX = e.clientX;
@@ -200,8 +181,7 @@
                     if (!isDragging) return;
                     let dx = e.clientX - startX;
                     let dy = e.clientY - startY;
-                    // Lấy rotation hiện tại của nó để cộng dồn
-                    sheet.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx/15}deg)`;
+                    sheet.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx / 15}deg)`;
                 };
 
                 document.onmouseup = (e) => {
@@ -210,12 +190,12 @@
                     let dx = e.clientX - startX;
                     if (Math.abs(dx) > 120) {
                         sheet.style.transition = '0.5s ease-out';
-                        sheet.style.transform = `translate(${dx * 4}px, ${e.clientY - startY}px) rotate(${dx/2}deg)`;
+                        sheet.style.transform = `translate(${dx * 5}px, ${e.clientY - startY}px) rotate(${dx / 2}deg)`;
                         sheet.style.opacity = '0';
                         setTimeout(() => sheet.remove(), 500);
                     } else {
                         sheet.style.transition = '0.3s ease';
-                        sheet.style.transform = `translate(0,0) rotate(0deg)`;
+                        sheet.style.transform = `rotate(0deg)`;
                     }
                 };
             });
@@ -223,8 +203,9 @@
 
         function runAway() {
             const btn = document.getElementById('btn-no');
-            btn.style.left = (Math.random() * 200 - 100) + 'px';
-            btn.style.top = (Math.random() * 200 - 100) + 'px';
+            btn.style.position = 'absolute';
+            btn.style.left = (Math.random() * 80) + '%';
+            btn.style.top = (Math.random() * 80) + '%';
         }
     </script>
 </body>
